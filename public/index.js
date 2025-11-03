@@ -1,4 +1,5 @@
 import { Application, Container, Sprite, Assets } from "./libs/pixi.mjs";
+const socket = io();
 
 const app = new Application();
 const container = new Container();
@@ -7,6 +8,7 @@ let player;
 async function main(){
     await render2D();
     controllers();
+    sendStatus();
 }
 
 async function render2D(){
@@ -15,7 +17,7 @@ async function render2D(){
 }
 
 async function renderScenery() {
-    await app.init({ background: '#ccc', resizeTo: window });
+    await app.init({ background: '#999', resizeTo: window });
     document.body.appendChild(app.canvas);
     app.stage.addChild(container);
 }
@@ -23,12 +25,12 @@ async function renderScenery() {
 async function renderPlayer(){
     const texture = await Assets.load('./assets/tank.png');
     player = new Sprite({
-        texture,
-        anchor: 0.5
+        texture: texture,
+        anchor: 0.5,
+        x: app.screen.width/2,
+        y: app.screen.height/2
     });
-    player.x = 0;
-    player.y = 0;
-    container.addChild(player)
+    container.addChild(player);
 }
 
 function controllers(){
@@ -49,9 +51,16 @@ function controllers(){
             player.x -= 5;
             player.rotation = Math.PI + Math.PI /2;
         }
+        sendStatus()
     })
 }
 
-
+function sendStatus(){
+    socket.emit('move', {
+        x: player.x,
+        y: player.y,
+        rotation: player.rotation
+    })
+}
 
 main();

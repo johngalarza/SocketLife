@@ -12,6 +12,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', (socket)=>{
     console.log('Player connected', socket.id);
+
+    socket.on('move', (player)=>{
+        console.log('Jugador', player)
+    })
 })
 
 app.get("/", (req, res)=>{
