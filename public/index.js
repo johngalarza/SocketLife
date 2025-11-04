@@ -1,4 +1,4 @@
-import { Application, Container, Sprite, Assets } from "./libs/pixi.mjs";
+import { Application, Container, Sprite, Assets, TilingSprite } from "./libs/pixi.mjs";
 const socket = io();
 
 const app = new Application();
@@ -19,10 +19,21 @@ async function render2D(){
 }
 
 async function renderScenery() {
-    await app.init({ background: '#bbb', resizeTo: window });
+    await app.init({ background: '#9fa13e', resizeTo: window });
     document.body.appendChild(app.canvas);
     app.stage.addChild(container);
+
+    const grassTexture = await Assets.load('./assets/grass.png');
+    const grass = new TilingSprite({
+        texture: grassTexture,
+        width: app.screen.width,
+        height: app.screen.height,
+        tint: 0x777777
+    });
+
+    container.addChildAt(grass, 0);
 }
+
 
 async function renderPlayer(){
     const texture = await Assets.load('./assets/tank.png');
